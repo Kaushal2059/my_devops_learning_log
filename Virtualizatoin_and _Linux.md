@@ -129,6 +129,33 @@ Verify permission:
 
 ![image](https://github.com/user-attachments/assets/d6a4a1f9-5e09-485f-84d5-da188142c58c)
 
+💻 Virtualization
+🧠 What I Learned:
+Installed and used VMware Workstation to create virtual machines
+
+Set up a Linux VM with Ubuntu
+
+Practiced CLI operations inside the VM
+
+![image](https://github.com/user-attachments/assets/3baaae20-edfc-4ea0-b88e-27569aca8c9b)
+
+🔐 Remote Access – SSH and Telnet
+Tools Used:
+ssh command in Linux terminal
+
+MobaXterm for SSH GUI access
+
+Steps Practiced:
+Enabled SSH on the VM
+
+Found the VM’s IP using ip a
+
+Connected using:
+
+![image](https://github.com/user-attachments/assets/caa3d74e-f544-4703-bd41-b58c46806efb)
+
+Accessed VM via MobaXterm for file transfers and GUI-like access
+
 
 
 
