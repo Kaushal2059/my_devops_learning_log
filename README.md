@@ -36,6 +36,8 @@ This repository documents my DevOps hands-on learning experience from Deerwalk I
 
 ## 🔗 Connect with Me
 
+
 - 📧 [rupakhetikaushal7@gmail.com](mailto:rupakhetikaushal7@gmail.com)
-- 🌐 [LinkedIn](https://www.linkedin.com/in/kaushal-rupakheti)
+- 🌐 [LinkedIn](https://www.linkedin.com/in/kaushal-rupakheti-529b68336/)
 - 💻 [GitHub](https://github.com/Kaushal2059)
+
