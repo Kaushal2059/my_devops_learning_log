@@ -1,0 +1,18 @@
+**Hosting:**
+
+Hosting is the process of deploying an application or website on a server that is connected to the internet so that users can access it remotely.
+
+During my DevOps journey I **hosted** a **static html project**, a **python django** project and a **php application** in a demo server
+
+**STEPS FOR STATIC HOSTING PRACTICE**
+
+  I used ubuntu server and nginx service for hosting.
+
+First of all, download the service;
+  **sudo apt update
+  sudo apt install -y nginx**
+
+the next step is to start and enable the servie using command:
+  **sudo systemctl start nginx
+  sudo systemctl enable nginx**
+
