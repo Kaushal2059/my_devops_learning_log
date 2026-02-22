@@ -49,5 +49,28 @@ steps:
                             
                             If you are unsure what these terms mean you should probably contact your host. If you still need help you can
                             always visit the WordPress support forums.
+
+  9: The next step is to create and setup database for the wordpress application:
+       First of all download the mariadb-server (apt install  -y mariadb-server)
+       Then enable the mariadb.service (systemctl enable mariadb.service)
+
+  10: Now configure the mariadb 
+      Use the command mysql_secure_connection
+  11: login to the mariadb
+      use mysql -u root -p
+      Once logged in can use "mysql" simply
+  12: Create a new database named wordpress
+      AS: CREATE DATABASE wordpress;
+  13: Create a user 
+      AS: CREATE USER 'username'@'%' IDENTIFIED BY 'password';
+      where username --> your username , % ---> mean you can login from anywhere (use ip or localhost if loggig in from specific device) password --> your password
+  14: Give full permission to that user
+      AS: GRANT ALL PRIVILEGES ON wordpress_db.* TO 'username'@'%';
+  15: Apply changes AND EXIT THE DATABASE
+      AS: FLUSH PRIVILEGES;
+            EXIT
+
+
+
                           
                            
