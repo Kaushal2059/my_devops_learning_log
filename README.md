@@ -6,10 +6,11 @@ This repository documents my DevOps hands-on learning experience from Deerwalk I
 
 - 🐳 Docker
 - 🔁 CI/CD Pipelines
-- ☁️ Hosting on EC2
+- ☁️ Hosting on EC2 and ubuntu server
 -📦 AWS Services
 - 🧱 Terraform
 - 🛠 Ansible
+- version control
 
 ---
 
