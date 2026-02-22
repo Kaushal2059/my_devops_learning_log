@@ -1,0 +1,53 @@
+This is a rough documentation of how I hosted a WordPress project in my Ubuntu VM using NGINX and PHP 8.3 FPM. 
+
+steps:
+      1: First of all I installed required packages:
+          php8.3-fpm service (sudo apt install -y php8.3-fpm) → to process PHP files
+          downloaded wordpress (wget donload_link)
+            downloaded unzip package to unzip wordpress (sudo apt install -y unzip)
+    2: now moved the wordpress file to the location /var/www/html and unzipped it ( sudo mv latest.zip /var/www/html/ and unzip latest.zip)
+    3: Then I changed the sockert to port as 127.0.0.0/9000 in the location ( /etc/php/8.3/fpm/pool.d/www.conf)
+        This means PHP will listen on port 9000.
+    4: Restart the php8.3-fpm service (systemctl restart php8.3-fpm.service)
+    5: Then I wrote the configuration file in the location /etc/nginx/conf.d/wordpress.conf as:
+      
+            server {
+                    listen 80;
+                    root /var/www/html/wordpress;
+                    index index.php;
+                    server_name wordpress.newexample.com;
+                    location ~ \.php$ {
+                        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                        fastcgi_pass 127.0.0.1:9000;
+                        fastcgi_index index.php;
+                        include fastcgi.conf;
+                        }
+            }
+
+            listen 80 → server listens on port 80
+            server_name → domain name of application
+            root → location of WordPress files
+            fastcgi_pass 127.0.0.1:9000 → connects NGINX to PHP-FPM
+
+  6: Now from the windows machine open notepad hosts as;
+      Open cmd as an administrator and goto C:\Windows\System32\drivers\etc
+      open notepad hosts
+      Enter your server ip and the domain name of your applicatoon
+          Example: 198.168.121.11           wordpress.newexample.com
+
+   7:  Again get back to the linux server and
+        Then check if there is any error by using the command nginx -t
+        If success message appears than restart the nginx service (sudo systemcl restart nginx.service)
+
+    8: Open you web browser and enter your domain name while keeping your sever turned on. 
+        You should seee a message as :
+
+    
+                            Your PHP installation appears to be missing the MySQL extension which is required by WordPress.
+                      
+                            Please check that the mysqli PHP extension is installed and enabled.
+                            
+                            If you are unsure what these terms mean you should probably contact your host. If you still need help you can
+                            always visit the WordPress support forums.
+                          
+                           
