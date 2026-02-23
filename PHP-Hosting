@@ -69,6 +69,28 @@ steps:
   15: Apply changes AND EXIT THE DATABASE
       AS: FLUSH PRIVILEGES;
             EXIT
+ 16: Now copy the wp-config-sample.php to wp-config.sample and make necessary changes in the location /var/www/html/wordpress cp wp-config-sample.php wp-config.php:
+            define( 'DB_NAME', 'wordpress_db' );
+
+            /** Database username */
+            define( 'DB_USER', 'your-username' );
+            
+            /** Database password */
+            define( 'DB_PASSWORD', 'your-password' );
+            
+            /** Database hostname */
+            define( 'DB_HOST', 'localhost' );
+            
+            /** Database charset to use in creating database tables. */
+            define( 'DB_CHARSET', 'utf8mb4' );
+            
+            /** The database collate type. Don't change this if in doubt. */
+            define( 'DB_COLLATE', '' );
+17: Make sure php8.3-mysql is downloaded in the server, if not download it.
+18 : Now restart all the services (nginx, php8.3-fpm and mariadb)
+19: go the the browser and enter your domain name, You shold see a welcome page
+20: Fill the form and login.
+21: The wordpress hosting is completed.
 
 
 
