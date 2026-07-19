@@ -2,11 +2,11 @@
 
 ## 📌 Background
 
-This log documents my first hands-on deployment to **AWS ECS Fargate**, done as part of a personal ML engineering project (`housing_regression_MLE`) — a FastAPI prediction service paired with a Streamlit dashboard, containerized with Docker and deployed behind an Application Load Balancer.
+This log documents my first hands-on deployment to **AWS ECS Fargate**, done as part of a personal ML engineering project (`housing_regression_MLE`), a FastAPI prediction service paired with a Streamlit dashboard, containerized with Docker and deployed behind an Application Load Balancer.
 
-Coming from the manual EC2 + Nginx + Gunicorn hosting I documented earlier in this repo ([`manual-hosting-django-project.md`](./manual-hosting-django-project.md)), this was my first time working with a **serverless container orchestration** service instead of managing a VM directly. The goal was to understand not just the "click here, run this" steps, but *why* each AWS service was the right choice, how the pieces actually connect to each other, and — maybe most usefully — what actually goes wrong in practice and how to debug it methodically rather than guessing.
+Coming from the manual EC2 + Nginx + Gunicorn hosting I documented earlier in this repo ([`manual-hosting-django-project.md`](./manual-hosting-django-project.md)), this was my first time working with a **serverless container orchestration** service instead of managing a VM directly. The goal was to understand not just the "click here, run this" steps, but *why* each AWS service was the right choice, how the pieces actually connect to each other, and maybe most usefully what actually goes wrong in practice and how to debug it methodically rather than guessing.
 
-I kept detailed notes throughout (including on paper, mid-implementation) and this write-up consolidates them into something more permanent, with every real error I hit along the way and how I actually tracked each one down — including one that took several rounds of misdiagnosis before finding the real cause.
+I kept detailed notes throughout (including on paper, mid-implementation) and this write-up consolidates them into something more permanent, with every real error I hit along the way and how I actually tracked each one down including one that took several rounds of misdiagnosis before finding the real cause.
 
 **Stack:** Docker → Amazon ECR → IAM (execution role + task role) → ECS Fargate → Application Load Balancer → S3 (model/data storage)
 **Region used throughout:** `us-east-2` (Ohio)
@@ -29,7 +29,7 @@ pull their images from ECR, and read/write model artifacts from S3.
 
 ## Step 1 — IAM user and CLI setup
 
-**Why an IAM user instead of using root:** root has no permission boundaries — if its credentials ever leaked, the entire account is compromised, billing included. IAM users can be scoped, rotated, and deleted independently of the account itself. This is the standard first step for any AWS work, not project-specific.
+**Why an IAM user instead of using root:** root has no permission boundaries if its credentials ever leaked, the entire account is compromised, billing included. IAM users can be scoped, rotated, and deleted independently of the account itself. This is the standard first step for any AWS work, not project-specific.
 
 **Steps taken:**
 1. Create a new IAM user (`Rishav2`), granted access to the Management Console
