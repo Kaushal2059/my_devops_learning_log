@@ -10,7 +10,7 @@ I kept detailed notes throughout (including on paper, mid-implementation) and th
 
 **Stack:** Docker → Amazon ECR → IAM (execution role + task role) → ECS Fargate → Application Load Balancer → S3 (model/data storage)
 **Region used throughout:** `us-east-2` (Ohio)
-**Not covered here:** CI/CD via GitHub Actions — planned as a follow-up entry once this deployment is stable.
+**Not covered here:** CI/CD via GitHub Actions planned as a follow-up entry once this deployment is stable.
 
 ---
 
@@ -49,7 +49,7 @@ pull their images from ECR, and read/write model artifacts from S3.
    ```
 
 ### Error hit: region mismatch (`us-east-2` vs `eu-west-2`)
-The original reference material (a tutorial repo) used `eu-west-2` (London) throughout — bucket, ECR, task defs. This deployment intentionally standardized on `us-east-2` instead. This meant every region reference in every later step had to be manually re-checked and swapped, including inside the task definition JSON files, which is easy to miss since it's not just a CLI flag — it's baked into `image` URIs and `logConfiguration` blocks too.
+The original reference material (a tutorial repo) used `eu-west-2` (London) throughout bucket, ECR, task defs. This deployment intentionally standardized on `us-east-2` instead. This meant every region reference in every later step had to be manually re-checked and swapped, including inside the task definition JSON files, which is easy to miss since it's not just a CLI flag it's baked into `image` URIs and `logConfiguration` blocks too.
 
 **Lesson:** decide on a region *before* touching any service, and grep every config file for the wrong one before registering anything.
 
@@ -63,7 +63,7 @@ failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine
 
 ## Step 2 — S3 bucket
 
-**Why S3 here:** the containers need to read a trained model and processed dataset at runtime, and write nothing back except maybe predictions/logs. S3 is the standard choice for this — cheap, durable, and IAM-controllable at the object level, so the container's permissions can be scoped tightly (see IAM section below) rather than mounting a filesystem or baking data into the image (which would make the image huge and force a rebuild every time the model changes).
+**Why S3 here:** the containers need to read a trained model and processed dataset at runtime, and write nothing back except maybe predictions/logs. S3 is the standard choice for this cheap, durable, and IAM-controllable at the object level, so the container's permissions can be scoped tightly (see IAM section below) rather than mounting a filesystem or baking data into the image (which would make the image huge and force a rebuild every time the model changes).
 
 **Steps:**
 ```powershell
@@ -82,7 +82,7 @@ aws s3 cp models/ s3://housing-regression-data/models/ --recursive
 `housing-regression-data` alone was already claimed globally (S3 bucket names are unique across *all* of AWS, not just this account). **Fix:** appended a suffix (`-rishau`) and used that name consistently in every later reference (task def env vars, IAM policy ARNs).
 
 ### Error hit: typo'd prefix (`mmodels` instead of `models`)
-Fixed by copying to the correct prefix and deleting the old one — S3 has no true "rename," since prefixes aren't real folders, just parts of the object key:
+Fixed by copying to the correct prefix and deleting the old one S3 has no true "rename," since prefixes aren't real folders, just parts of the object key:
 ```powershell
 aws s3 mv s3://housing-regression-data/mmodels/ s3://housing-regression-data/models/ --recursive
 ```
@@ -104,7 +104,7 @@ aws ecr create-repository --repository-name housing-streamlit --region us-east-2
 ```powershell
 aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin "$ACCOUNT_ID.dkr.ecr.us-east-2.amazonaws.com"
 ```
-How this works: ECR requires authentication before push/pull — unlike a public registry. The first command asks AWS for a temporary auth token, printed to stdout. The pipe (`|`) feeds that token into `docker login` as the password, using the literal username `AWS` (not a placeholder — that's fixed by ECR). The `docker login` command then logs into that specific ECR registry endpoint using the piped token.
+How this works: ECR requires authentication before push/pull — unlike a public registry. The first command asks AWS for a temporary auth token, printed to stdout. The pipe (`|`) feeds that token into `docker login` as the password, using the literal username `AWS` (not a placeholder that's fixed by ECR). The `docker login` command then logs into that specific ECR registry endpoint using the piped token.
 
 **Build and tag the image:**
 ```powershell
@@ -112,7 +112,7 @@ docker build -t housing-api -f Dockerfile .
 docker tag housing-api:latest "$ACCOUNT_ID.dkr.ecr.us-east-2.amazonaws.com/housing-api:latest"
 docker push "$ACCOUNT_ID.dkr.ecr.us-east-2.amazonaws.com/housing-api:latest"
 ```
-Docker images are referenced by **registry + name + tag**. Locally the image is just `housing-api:latest` — ECR won't accept a push to that name because it doesn't know which registry it belongs to. `docker tag` creates a second name pointing at the same image (no rebuild, no duplication of data); this new name is the full path ECR expects. Same process repeated for the Streamlit image, swapping the Dockerfile and repo name.
+Docker images are referenced by **registry + name + tag**. Locally the image is just `housing-api:latest`ECR won't accept a push to that name because it doesn't know which registry it belongs to. `docker tag` creates a second name pointing at the same image (no rebuild, no duplication of data); this new name is the full path ECR expects. Same process repeated for the Streamlit image, swapping the Dockerfile and repo name.
 
 ### Error hit: `docker login` — 400 Bad Request
 ```
